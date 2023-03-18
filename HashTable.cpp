@@ -80,6 +80,30 @@ vector<vector<string>> HashTable::takeLastMonthData(vector<vector<string>> parse
 }
 
 //Functions for ADD, DEL, IMPORT, ...
+bool HashTable::isEmpty(int index) {
+        //TODO
+    return false;
+}
+
+void HashTable::add(){
+
+    string name;
+    string kuerzel;
+    string wkn;
+
+    cout<<"Enter the name of the share: ";
+    cin>> name;
+    cout<<"Enter the Kuerzel: ";
+    cin>> kuerzel;
+    cout<<"Enter the name of the WKN: ";
+    cin>> wkn;
+
+    int indexToInsert = getInsertionIndex(kuerzel);
+    this->aktien[indexToInsert].kuerzel = kuerzel;
+    this->aktien[indexToInsert].name = name;
+    this->aktien[indexToInsert].wkn = wkn;
+}
+
 void HashTable::import(){
     // 0: Ask for kuerzel and filename
     string kuerzel;
@@ -93,7 +117,7 @@ void HashTable::import(){
     // 2: Read the relevant CSV rows
     vector<vector<string>> content = readCSV(fname);
     // 3: Insert data in the corresponding index
-    insertData(insertionIndex, content);
+    insertData(content, insertionIndex);
 
 }
 //TESTING

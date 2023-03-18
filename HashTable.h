@@ -44,16 +44,21 @@ class HashTable{
         //get data of last 30 days from the already parsed CSV
         vector<vector<string>> takeLastMonthData(vector<vector<string>> parsedCSV);
 
+        //search function
+        bool isEmpty(int index);
 
 
 
     public:
         //Functions for ADD, DEL, IMPORT, ...
+        void add();
         void import();
         HashTable();
 
         //TESTING
         void readCSVdebug(string fname);
+
+
 };
 
 #endif // HASH_TABLE
