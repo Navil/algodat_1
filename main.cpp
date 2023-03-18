@@ -1,12 +1,8 @@
-
-
-#include "HashTable.cpp"
-
-
+#include "HashTable.h"
 
 
 int main() {
-    HashTable table = HashTable();
+    HashTable table;
 
     string input;
 
