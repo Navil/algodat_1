@@ -181,13 +181,13 @@ void  HashTable::load(){
     // TODO open file and read it line by line
     // use importaktiefromStringLine to load data
 }
-void  HashTable::del() {
+void HashTable::del() {
 
     string kuerzel;
     cout<<"Enter Kuerzel: ";
     cin>>kuerzel;
 
-    int toDelete = findByIndex(kuerzel);
+    int toDelete = findByKuerzel(kuerzel);
 
     if (toDelete == -1){
         // There is nothing to delete
