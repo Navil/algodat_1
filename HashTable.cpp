@@ -97,6 +97,7 @@ int HashTable::findByKuerzel(string kuerzel) {
         }
         tries ++;
     }
+    // If we get here, the entry was not found
     return -1;
 }
 
@@ -143,7 +144,7 @@ vector<vector<string>> HashTable::takeLastMonthData(vector<vector<string>> parse
 
     vector<vector<string>> output;
     //to take last 30 days data
-    int finalIndex = parsedCSV.size() - 30;
+    int finalIndex = parsedCSV.size() - DAYS_SIZE;
 
     for(int i = parsedCSV.size() -1; i >= finalIndex; --i){
         output.push_back(parsedCSV[i]);
@@ -186,9 +187,10 @@ void  HashTable::del() {
     cout<<"Enter Kuerzel: ";
     cin>>kuerzel;
 
-    int toDelete = getInsertionIndex(kuerzel);
+    int toDelete = findByIndex(kuerzel);
 
-    if (isEmpty(toDelete) == true){
+    if (toDelete == -1){
+        // There is nothing to delete
         return;
     }
     else {
@@ -244,6 +246,7 @@ void HashTable::import(){
         cout << "Not found."<<endl;
         return;
     }
+
     // 2: Read the relevant CSV rows
     vector<vector<string>> content = takeLastMonthData(readCSV(kuerzel+".csv"));
     // 3: Insert data in the corresponding index
