@@ -198,6 +198,10 @@ void  HashTable::del() {
     }
 }
 
+void Entry::print(){
+    cout << date << +", " << open << ", " << high << ", " << low << ", " << close << ", " << volume << ", " << adjClose << endl;
+}
+
 void HashTable::search() {
 
     string kuerzel;

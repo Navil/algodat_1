@@ -26,9 +26,7 @@ struct Entry {
     float adjClose;
     void clear();
 
-    void print(){
-        cout << date << +", " << open << ", " << high << ", " << low << ", " << close << ", " << volume << ", " << adjClose << endl;
-    }
+    void print();
 };
 
 struct Aktie{
