@@ -34,7 +34,7 @@ struct Aktie{
 };
 
 class HashTable{
-    struct Aktie aktien[1093];
+    Aktie aktien[1093];
 
     int hash_function(const std::string& s) {
         int hash_val = 0;
@@ -93,10 +93,13 @@ public:
         else
             cout<<"Could not open the file\n";
 
-        Entry* entries = createEntryFromCSV(content);
-        struct Aktie* aktie = &aktien[hash_function(kuerzel)];
-        aktie->entries = entries;
 
+        struct Aktie* aktie = &aktien[hash_function(kuerzel)];
+
+        Entry* entries = createEntryFromCSV(content);
+        for(int i=0; i<30;i++){
+            aktie->entries[i] = entries[i];
+        }
     }
 };
 
