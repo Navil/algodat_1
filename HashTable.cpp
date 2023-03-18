@@ -182,7 +182,36 @@ string HashTable::aktieToStringLine(int index) {
 }
 
 void  HashTable::importAktieFromStringLine(string line) {
-    // TODO
+    stringstream str(line);
+    string word;
+    // get line takes each comma separated word from the str(line) and copies it in word
+    getline(str, word, ',');
+    int index = stoi(word);
+    // take a reference of the target aktie to fill
+    Aktie& aktieIndex = this->aktien[index];
+    getline(str, word, ',');
+    aktieIndex.kuerzel = word;
+    getline(str, word, ',');
+    aktieIndex.name = word;
+    getline(str, word, ',');
+    aktieIndex.wkn = word;
+    for(int i = 0; i < DAYS_SIZE; i++) {
+        getline(str, word, ',');
+        aktieIndex.entries[i].date = word;
+        getline(str, word, ',');
+        aktieIndex.entries[i].open = stof(word);
+        getline(str, word, ',');
+        aktieIndex.entries[i].high = stof(word);
+        getline(str, word, ',');
+        aktieIndex.entries[i].low = stof(word);
+        getline(str, word, ',');
+        aktieIndex.entries[i].close = stof(word);
+        getline(str, word, ',');
+        aktieIndex.entries[i].volume = stof(word);
+        getline(str, word, ',');
+        aktieIndex.entries[i].adjClose = stof(word);
+    }
+
 }
 void  HashTable::save(){
     string fname;
@@ -206,7 +235,21 @@ void  HashTable::load(){
     cin>>fname;
     // TODO open file and read it line by line
     // use importaktiefromStringLine to load data
+    // boilerplate code to read csv file
+    string line;
+    fstream file (fname, ios::in);
+    if(file.is_open())
+    {
+        // get line populates the variable line with the data in the file
+        while(getline(file, line))  // loops until there are no more lines
+        {
+            importAktieFromStringLine(line);
+        }
+    }
+    else
+        cout<<"Could not open the file\n";
 }
+
 void HashTable::del() {
 
     string kuerzel;

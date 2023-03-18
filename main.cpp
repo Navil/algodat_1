@@ -7,7 +7,7 @@ int main() {
     string input;
 
     while(input != "QUIT"){
-        cout << "Type a command. To stop type exit." << endl;
+        cout << "Type a command. To stop type QUIT." << endl;
         cin >> input;
 
         if(input == "IMPORT"){
@@ -16,6 +16,8 @@ int main() {
             table.add();
         }else if(input == "SAVE"){
             table.save();
+        }else if(input == "LOAD"){
+            table.load();
         }else if(input == "SEARCH"){
             table.search();
         }
