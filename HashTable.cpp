@@ -153,13 +153,30 @@ vector<vector<string>> HashTable::takeLastMonthData(vector<vector<string>> parse
 
 //Functions for ADD, DEL, IMPORT, ...
 bool HashTable::isEmpty(int index) {
-        //TODO
-    return false;
+    if (this->aktien[index].kuerzel == "")
+        return true;
+    else
+        return false;
 }
 
 string HashTable::aktieToStringLine(int index) {
-    // TODO
-    return "";
+    // take a reference of the target aktie
+    Aktie& aktieIndex = this->aktien[index];
+    string line = "";
+    line += to_string(index) + ",";
+    line += aktieIndex.kuerzel + ",";
+    line += aktieIndex.name + ",";
+    line += aktieIndex.wkn + ",";
+    for(int i = 0; i < DAYS_SIZE ; i++) {
+        line += aktieIndex.entries[i].date + ",";
+        line += to_string(aktieIndex.entries[i].open) + ",";
+        line += to_string(aktieIndex.entries[i].high) + ",";
+        line += to_string(aktieIndex.entries[i].low) + ",";
+        line += to_string(aktieIndex.entries[i].close) + ",";
+        line += to_string(aktieIndex.entries[i].volume) + ",";
+        line += to_string(aktieIndex.entries[i].adjClose) + ",";
+    }
+    return line;
 }
 
 void  HashTable::importAktieFromStringLine(string line) {
@@ -169,8 +186,17 @@ void  HashTable::save(){
     string fname;
     cout<<"Enter filename: ";
     cin>>fname;
-    // TODO open file
-    // use aktietostringline on the non-empty aktie to populate file
+    // Open and overwrite file
+    ofstream savefile;
+    savefile.open(fname);
+    for(int i = 0; i < ARRAY_SIZE; i++) {
+        // Only write the aktie that are not empty
+        if(!isEmpty(i)) {
+            cout << "savefile" << endl;
+            savefile << aktieToStringLine(i) + "\n";
+        }
+    }
+    savefile.close();
 }
 void  HashTable::load(){
     string fname;

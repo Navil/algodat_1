@@ -14,6 +14,8 @@ int main() {
             table.import();
         }else if(input == "add"){
             table.add();
+        }else if(input == "save"){
+            table.save();
         }
 
     }
