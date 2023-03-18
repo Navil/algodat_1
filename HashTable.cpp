@@ -9,6 +9,16 @@ Entry::Entry() {
     this->volume = 0;
     this->adjClose = 0;}
 
+void Entry::clear() {
+    this->date = "";
+    this->open = 0;
+    this->high = 0;
+    this->low = 0;
+    this->close = 0;
+    this->volume = 0;
+    this->adjClose = 0;
+}
+
 Entry::Entry(string date, string open, string high, string low, string close, string volume, string adjClose){
     this->date = date;
     // std::stof -> converts string to float
@@ -27,6 +37,15 @@ Aktie::Aktie() {
     this->wkn = "";
     // The entries[30] are automatically initialized as zero with the Entry() constructor
     }
+
+void Aktie::clear() {
+    this->kuerzel = "";
+    this->name = "";
+    this->wkn = "";
+    for(int i = 0; i < 30; i++) {
+        this->entries[i].clear();
+    }
+}
 
 
 int HashTable::hash_function(const std::string& s) {
@@ -106,10 +125,38 @@ string HashTable::aktieToStringLine(int index) {
     return "";
 }
 
-void importAktieFromStringLine(string line) {
+void  HashTable::importAktieFromStringLine(string line) {
     // TODO
 }
+void  HashTable::save(){
+    string fname;
+    cout<<"Enter filename: ";
+    cin>>fname;
+    // TODO open file
+    // use aktietostringline on the non-empty aktie to populate file
+}
+void  HashTable::load(){
+    string fname;
+    cout<<"Enter filename: ";
+    cin>>fname;
+    // TODO open file and read it line by line
+    // use importaktiefromStringLine to load data
+}
+void  HashTable::del() {
 
+    string kuerzel;
+    cout<<"Enter Kuerzel: ";
+    cin>>kuerzel;
+
+    int toDelete = getInsertionIndex(kuerzel);
+
+    if (isEmpty(toDelete) == true){
+        return;
+    }
+    else {
+         this->aktien[toDelete].clear();
+    }
+}
 
 void HashTable::add(){
 

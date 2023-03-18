@@ -21,6 +21,7 @@ struct Entry {
     float close;
     float volume;
     float adjClose;
+    void clear();
 };
 
 struct Aktie{
@@ -30,6 +31,7 @@ struct Aktie{
     string kuerzel;
     string name;
     string wkn;
+    void clear();
 
 };
 
@@ -54,7 +56,10 @@ class HashTable{
 
     public:
         //Functions for ADD, DEL, IMPORT, ...
+        void save();
+        void load();
         void add();
+        void del();
         void import();
         HashTable();
 
