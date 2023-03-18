@@ -10,6 +10,7 @@
 
 using namespace std;
 
+const int ARRAY_SIZE = 1093;
 struct Entry {
     Entry();
     Entry(string date, string open, string high, string low, string close, string volume, string adjClose);
@@ -35,10 +36,13 @@ struct Aktie{
 
 class HashTable{
     private:
-        Aktie aktien[1093];
+        Aktie aktien[ARRAY_SIZE];
         // Methods
-        int hash_function(const string& s);
+        int hashFunction(const string& s);
         int getInsertionIndex(string s);
+        int findByIndex(string s);
+
+
 
         //get data from csv and copy it into vector of vectors
         vector<vector<string>> readCSV(string fname);

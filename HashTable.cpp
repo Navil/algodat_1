@@ -1,5 +1,6 @@
 #include "HashTable.h"
 
+
 Entry::Entry() {
     this->date = "";
     this->open = 0;
@@ -8,6 +9,7 @@ Entry::Entry() {
     this->close = 0;
     this->volume = 0;
     this->adjClose = 0;}
+
 
 Entry::Entry(string date, string open, string high, string low, string close, string volume, string adjClose){
     this->date = date;
@@ -20,6 +22,7 @@ Entry::Entry(string date, string open, string high, string low, string close, st
     this->adjClose = stof(adjClose);
 }
 
+
 Aktie::Aktie() {
     // Initialize all stocks as empty
     this->kuerzel = "";
@@ -28,8 +31,7 @@ Aktie::Aktie() {
     // The entries[30] are automatically initialized as zero with the Entry() constructor
     }
 
-
-int HashTable::hash_function(const std::string& s) {
+int HashTable::hashFunction(const std::string& s) {
     int hash_val = 0;
     int n = s.length();
     for (int i = 0; i < n; i++) {
@@ -37,12 +39,43 @@ int HashTable::hash_function(const std::string& s) {
         hash_val += static_cast<int>(s[i]) * pow(31, n-1-i);
         }
     // Take the modulus to restrict the values from 0 to 1092
-    return hash_val%1093;
+    return hash_val%ARRAY_SIZE;
 }
 
-int HashTable::getInsertionIndex(string s) {
-    // TODO
-    return 0;
+int HashTable::getInsertionIndex(string kuerzel) {
+    int index = hashFunction(kuerzel);
+    int tries = 0;
+    int base = 1;
+    while(tries < ARRAY_SIZE){
+        string currentKuerzel = aktien[index].kuerzel;
+        if(currentKuerzel.empty()){
+            cout << "Empty element found at index: "<<index<<endl;
+            return index;
+        }else{
+            index = (index + (base*base))%ARRAY_SIZE;
+            base++;
+        }
+        tries ++;
+    }
+    throw range_error( "Gave up looking for insertion index after 1000 tries." );
+}
+
+int HashTable::findByIndex(string kuerzel) {
+    int index = hashFunction(kuerzel);
+    int tries = 0;
+    int base = 1;
+    while(tries < ARRAY_SIZE){
+        string currentKuerzel = aktien[index].kuerzel;
+        if(currentKuerzel == kuerzel){
+            cout << "Kuerzel found at index: "<<index<<endl;
+            return index;
+        }else{
+            index = (index + (base*base))%ARRAY_SIZE;
+            base++;
+        }
+        tries ++;
+    }
+    throw range_error( "Gave up looking for kuerzel after 1000 tries." );
 }
 
 void insertData(vector<vector<string>> data, int insertionIndex){
@@ -128,6 +161,7 @@ void HashTable::add(){
     this->aktien[indexToInsert].kuerzel = kuerzel;
     this->aktien[indexToInsert].name = name;
     this->aktien[indexToInsert].wkn = wkn;
+    cout << "Successfully added."<<endl;
 }
 
 void HashTable::import(){
@@ -135,15 +169,13 @@ void HashTable::import(){
     string kuerzel;
     cout<<"Enter the Kuerzel:"<<endl;
     cin >> kuerzel;
-    string fname;
-    cout<<"Enter the path to the file: ";
-    cin>>fname;
+
     // 1: Get insertion index
-    int insertionIndex = getInsertionIndex(fname);
+    int index = findByIndex(kuerzel);
     // 2: Read the relevant CSV rows
-    vector<vector<string>> content = readCSV(fname);
+    vector<vector<string>> content = readCSV(kuerzel+".csv");
     // 3: Insert data in the corresponding index
-    insertData(content, insertionIndex);
+    insertData(content, index);
 
 }
 //TESTING

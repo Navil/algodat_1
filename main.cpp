@@ -12,6 +12,8 @@ int main() {
 
         if(input == "import"){
             table.import();
+        }else if(input == "add"){
+            table.add();
         }
 
     }
