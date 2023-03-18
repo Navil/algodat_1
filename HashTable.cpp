@@ -1,6 +1,13 @@
 #include "HashTable.h"
 
-Entry::Entry() {}
+Entry::Entry() {
+    this->date = "";
+    this->open = 0;
+    this->high = 0;
+    this->low = 0;
+    this->close = 0;
+    this->volume = 0;
+    this->adjClose = 0;}
 
 Entry::Entry(string date, string open, string high, string low, string close, string volume, string adjClose){
     this->date = date;
@@ -13,7 +20,14 @@ Entry::Entry(string date, string open, string high, string low, string close, st
     this->adjClose = stof(adjClose);
 }
 
-Aktie::Aktie() {}
+Aktie::Aktie() {
+    // Initialize all stocks as empty
+    this->kuerzel = "";
+    this->name = "";
+    this->wkn = "";
+    // The entries[30] are automatically initialized as zero with the Entry() constructor
+    }
+
 
 int HashTable::hash_function(const std::string& s) {
     int hash_val = 0;
@@ -36,6 +50,8 @@ void insertData(vector<vector<string>> data, int insertionIndex){
 }
 
 HashTable::HashTable() {}
+
+
 
 //get data from csv and copy it into vector of vectors
 vector<vector<string>> HashTable::readCSV(string fname){
@@ -84,6 +100,16 @@ bool HashTable::isEmpty(int index) {
         //TODO
     return false;
 }
+
+string HashTable::aktieToStringLine(int index) {
+    // TODO
+    return "";
+}
+
+void importAktieFromStringLine(string line) {
+    // TODO
+}
+
 
 void HashTable::add(){
 

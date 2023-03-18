@@ -30,6 +30,7 @@ struct Aktie{
     string kuerzel;
     string name;
     string wkn;
+
 };
 
 class HashTable{
@@ -46,7 +47,9 @@ class HashTable{
 
         //search function
         bool isEmpty(int index);
-
+        // SAVE/LOAD related
+        string aktieToStringLine(int index);
+        void importAktieFromStringLine(string line);
 
 
     public:
