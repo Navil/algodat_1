@@ -11,6 +11,8 @@
 using namespace std;
 
 const int ARRAY_SIZE = 1093;
+const int DAYS_SIZE = 30;
+
 struct Entry {
     Entry();
     Entry(string date, string open, string high, string low, string close, string volume, string adjClose);
@@ -28,7 +30,7 @@ struct Entry {
 struct Aktie{
     Aktie();
 
-    Entry entries[30];
+    Entry entries[DAYS_SIZE];
     string kuerzel;
     string name;
     string wkn;
