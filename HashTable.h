@@ -2,50 +2,25 @@
 #define HASH_TABLE
 
 #include <string>
-#include <iostream>
 #include <vector>
-#include <fstream>
-#include <sstream>
-#include <cmath>
+
+// local includes
+#include "Entry.h"
+#include "Aktie.h"
+
 
 using namespace std;
 
 const int ARRAY_SIZE = 1093;
-const int DAYS_SIZE = 30;
-
-struct Entry {
-    Entry();
-    void set(string date, string open, string high, string low, string close, string volume, string adjClose);
-
-    string date;
-    float open;
-    float high;
-    float low;
-    float close;
-    float volume;
-    float adjClose;
-    void clear();
-
-    void print();
-};
-
-struct Aktie{
-    Aktie();
-
-    Entry entries[DAYS_SIZE];
-    string kuerzel;
-    string name;
-    string wkn;
-    void clear();
-    void plot();
-};
 
 class HashTable{
     private:
         Aktie aktien[ARRAY_SIZE];
         // Methods
         int hashFunction(const string& s);
+        // returns where to insert
         int getInsertionIndex(string s);
+        // tries to find, if not, returns -1
         int findByKuerzel(string kuerzel);
         void insertData(vector<vector<string>> data, int insertionIndex);
 
@@ -55,8 +30,6 @@ class HashTable{
         //get data of last 30 days from the already parsed CSV
         vector<vector<string>> takeLastMonthData(vector<vector<string>> parsedCSV);
 
-        //search function
-        bool isEmpty(int index);
         // SAVE/LOAD related
         string aktieToStringLine(int index);
         void importAktieFromStringLine(string line);
@@ -72,11 +45,6 @@ class HashTable{
         void search();
         void plot();
         HashTable();
-
-        //TESTING
-        void readCSVdebug(string fname);
-
-
 };
 
 #endif // HASH_TABLE

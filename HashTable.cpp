@@ -1,74 +1,10 @@
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <cmath>
+
 #include "HashTable.h"
-#include "asciiplotter.h"
 
-Entry::Entry() {
-    this->date = "";
-    this->open = 0;
-    this->high = 0;
-    this->low = 0;
-    this->close = 0;
-    this->volume = 0;
-    this->adjClose = 0;}
-
-
-void Entry::clear() {
-    this->date = "";
-    this->open = 0;
-    this->high = 0;
-    this->low = 0;
-    this->close = 0;
-    this->volume = 0;
-    this->adjClose = 0;
-}
-
-void Entry::set(string date, string open, string high, string low, string close, string volume, string adjClose){
-    this->date = date;
-    // std::stof -> converts string to float
-    this->open = stof(open);
-    this->high = stof(high);
-    this->low = stof(low);
-    this->close = stof(close);
-    this->volume = stof(volume);
-    this->adjClose = stof(adjClose);
-}
-
-
-Aktie::Aktie() {
-    // Initialize all stocks as empty
-    this->kuerzel = "";
-    this->name = "";
-    this->wkn = "";
-    // The entries[30] are automatically initialized as zero with the Entry() constructor
-    }
-
-
-void Aktie::clear() {
-    this->kuerzel = "";
-    this->name = "";
-    this->wkn = "";
-    for(int i = 0; i < 30; i++) {
-        this->entries[i].clear();
-    }
-}
-
-void Aktie::plot() {
-    AsciiPlotter plotter (this->name, 60, 20);
-    plotter.xlabel("time");
-    plotter.ylabel("USD");
-    // This class requires doubles
-    vector<double> schlusskurse;
-    vector<double> time;
-    for (int i = 0; i < DAYS_SIZE; i++) {
-        time.push_back(i);
-    }
-    for (int i = DAYS_SIZE - 1 ; i >= 0; i--) {
-        schlusskurse.push_back(this->entries[i].close);
-    }
-    plotter.addPlot(time, schlusskurse, "Schlusskurse", '*');
-    plotter.show();
-
-
-}
 
 int HashTable::hashFunction(const std::string& s) {
     int hash_val = 0;
@@ -84,20 +20,37 @@ int HashTable::hashFunction(const std::string& s) {
 int HashTable::getInsertionIndex(string kuerzel) {
     int baseIndex = hashFunction(kuerzel);
     int index = baseIndex;
+    int firstDeletedIndex = -1;  // We keep track of any deleted aktie to replace
     int tries = 0;
     int base = 1;
     while(tries < ARRAY_SIZE){
         string currentKuerzel = aktien[index].kuerzel;
-        if(currentKuerzel.empty()){
-            cout << "Empty element found at index: "<<index<<endl;
+        // if deleted and it is the first one found
+        if (aktien[index].isDeleted && firstDeletedIndex == -1) {
+            firstDeletedIndex = index;
+        }
+        // Case in which one replaces an already existing entry
+        if(currentKuerzel == kuerzel) {
             return index;
+        }
+
+        if(aktien[index].isEmpty()){
+            // If there was any deleted aktie before
+            if (firstDeletedIndex != -1) {
+                cout << "Inserting in deleted element: " << firstDeletedIndex << endl;
+                return firstDeletedIndex;
+            }
+            else {
+                cout << "Empty element found at index: "<<index<<endl;
+                return index;
+            }
         }else{
             index = (baseIndex + (base*base))%ARRAY_SIZE;
             base++;
         }
         tries ++;
     }
-    throw range_error( "Gave up looking for insertion index after 1000 tries." );
+    throw range_error( "Gave up looking for insertion index after 1093 tries." );
 }
 
 int HashTable::findByKuerzel(string kuerzel) {
@@ -105,11 +58,17 @@ int HashTable::findByKuerzel(string kuerzel) {
     int index = baseIndex;
     int tries = 0;
     int base = 1;
-    while(tries < ARRAY_SIZE){
+    while(tries < ARRAY_SIZE && aktien[index].isEmpty() == false ){
         string currentKuerzel = aktien[index].kuerzel;
         if(currentKuerzel == kuerzel){
-            cout << "Kuerzel found at index: "<<index<<endl;
-            return index;
+            // If it was deleted, it is not there
+            if(aktien[index].isDeleted) {
+                return -1;
+            }
+            else {
+                cout << "Kuerzel found at index: "<<index<<endl;
+                return index;
+            }
         }else{
             index = (baseIndex + (base*base))%ARRAY_SIZE;
             base++;
@@ -173,18 +132,11 @@ vector<vector<string>> HashTable::takeLastMonthData(vector<vector<string>> parse
 }
 
 //Functions for ADD, DEL, IMPORT, ...
-bool HashTable::isEmpty(int index) {
-    if (this->aktien[index].kuerzel == "")
-        return true;
-    else
-        return false;
-}
 
 string HashTable::aktieToStringLine(int index) {
     // take a reference of the target aktie
     Aktie& aktieIndex = this->aktien[index];
     string line = "";
-    line += to_string(index) + ",";
     line += aktieIndex.kuerzel + ",";
     line += aktieIndex.name + ",";
     line += aktieIndex.wkn + ",";
@@ -205,10 +157,11 @@ void  HashTable::importAktieFromStringLine(string line) {
     string word;
     // get line takes each comma separated word from the str(line) and copies it in word
     getline(str, word, ',');
-    int index = stoi(word);
+    // this first word is the kuerzel, which we use to reinsert the aktie
+    int index = getInsertionIndex(word);
     // take a reference of the target aktie to fill
     Aktie& aktieIndex = this->aktien[index];
-    getline(str, word, ',');
+    aktieIndex.clear();  // we clear it, if it was deleted
     aktieIndex.kuerzel = word;
     getline(str, word, ',');
     aktieIndex.name = word;
@@ -241,8 +194,7 @@ void  HashTable::save(){
     savefile.open(fname);
     for(int i = 0; i < ARRAY_SIZE; i++) {
         // Only write the aktie that are not empty
-        if(!isEmpty(i)) {
-            cout << "savefile" << endl;
+        if(!this->aktien[i].isEmpty() && !this->aktien[i].isDeleted ) {
             savefile << aktieToStringLine(i) + "\n";
         }
     }
@@ -279,16 +231,14 @@ void HashTable::del() {
 
     if (toDelete == -1){
         // There is nothing to delete
+        cout << "Not found." << endl;
         return;
     }
     else {
-         this->aktien[toDelete].clear();
+        this->aktien[toDelete].isDeleted = true;
     }
 }
 
-void Entry::print(){
-    cout << date << +", " << open << ", " << high << ", " << low << ", " << close << ", " << volume << ", " << adjClose << endl;
-}
 
 void HashTable::search() {
 
@@ -319,9 +269,13 @@ void HashTable::add(){
     cin>> wkn;
 
     int indexToInsert = getInsertionIndex(kuerzel);
+    if (this->aktien[indexToInsert].kuerzel != kuerzel) {
+        this->aktien[indexToInsert].clear();  // just clear when replacing
+    }
     this->aktien[indexToInsert].kuerzel = kuerzel;
     this->aktien[indexToInsert].name = name;
     this->aktien[indexToInsert].wkn = wkn;
+    this->aktien[indexToInsert].isDeleted = false;
     cout << "Successfully added."<<endl;
 }
 
@@ -356,22 +310,5 @@ void HashTable::plot(){
         cout << "Not found."<<endl;
     }else{
         aktien[index].plot();
-    }
-}
-
-//TESTING
-void HashTable::readCSVdebug(string fname){
-
-    vector<vector<string>> parsedCSV = readCSV(fname);
-
-    vector<vector<string>> output = takeLastMonthData(parsedCSV);
-
-    for(int i = 0; i < output.size(); ++i){
-
-        for(int j = 0; j < output[i].size(); ++j){
-
-            cout<<output[i][j]<<", ";
-        }
-        cout<<endl;
     }
 }

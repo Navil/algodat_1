@@ -1,5 +1,5 @@
 #include "HashTable.h"
-
+#include <iostream>
 
 int main() {
     HashTable table;
@@ -22,8 +22,9 @@ int main() {
             table.search();
         }else if(input == "PLOT"){
             table.plot();
+        } else if(input == "DEL"){
+            table.del();
         }
-
     }
     return 0;
 }
