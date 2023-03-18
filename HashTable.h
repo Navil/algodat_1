@@ -13,7 +13,7 @@ using namespace std;
 const int ARRAY_SIZE = 1093;
 struct Entry {
     Entry();
-    Entry(string date, string open, string high, string low, string close, string volume, string adjClose);
+    void set(string date, string open, string high, string low, string close, string volume, string adjClose);
 
     string date;
     float open;
@@ -23,6 +23,10 @@ struct Entry {
     float volume;
     float adjClose;
     void clear();
+
+    void print(){
+        cout << date << +", " << open << ", " << high << ", " << low << ", " << close << ", " << volume << ", " << adjClose << endl;
+    }
 };
 
 struct Aktie{
@@ -33,7 +37,6 @@ struct Aktie{
     string name;
     string wkn;
     void clear();
-
 };
 
 class HashTable{
@@ -42,8 +45,8 @@ class HashTable{
         // Methods
         int hashFunction(const string& s);
         int getInsertionIndex(string s);
-        int findByIndex(string s);
-
+        int findByKuerzel(string kuerzel);
+        void insertData(vector<vector<string>> data, int insertionIndex);
 
 
         //get data from csv and copy it into vector of vectors
@@ -65,6 +68,7 @@ class HashTable{
         void add();
         void del();
         void import();
+        void search();
         HashTable();
 
         //TESTING

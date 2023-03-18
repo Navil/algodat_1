@@ -6,14 +6,16 @@ int main() {
 
     string input;
 
-    while(input != "exit"){
+    while(input != "QUIT"){
         cout << "Type a command. To stop type exit." << endl;
         cin >> input;
 
-        if(input == "import"){
+        if(input == "IMPORT"){
             table.import();
-        }else if(input == "add"){
+        }else if(input == "ADD"){
             table.add();
+        }else if(input == "SEARCH"){
+            table.search();
         }
 
     }
