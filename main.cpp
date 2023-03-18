@@ -20,6 +20,8 @@ int main() {
             table.load();
         }else if(input == "SEARCH"){
             table.search();
+        }else if(input == "PLOT"){
+            table.plot();
         }
 
     }

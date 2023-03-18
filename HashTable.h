@@ -37,6 +37,7 @@ struct Aktie{
     string name;
     string wkn;
     void clear();
+    void plot();
 };
 
 class HashTable{
@@ -69,6 +70,7 @@ class HashTable{
         void del();
         void import();
         void search();
+        void plot();
         HashTable();
 
         //TESTING

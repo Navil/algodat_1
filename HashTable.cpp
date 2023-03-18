@@ -1,5 +1,5 @@
 #include "HashTable.h"
-
+#include "asciiplotter.h"
 
 Entry::Entry() {
     this->date = "";
@@ -49,6 +49,25 @@ void Aktie::clear() {
     for(int i = 0; i < 30; i++) {
         this->entries[i].clear();
     }
+}
+
+void Aktie::plot() {
+    AsciiPlotter plotter (this->name, 60, 20);
+    plotter.xlabel("time");
+    plotter.ylabel("USD");
+    // This class requires doubles
+    vector<double> schlusskurse;
+    vector<double> time;
+    for (int i = 0; i < DAYS_SIZE; i++) {
+        time.push_back(i);
+    }
+    for (int i = DAYS_SIZE - 1 ; i >= 0; i--) {
+        schlusskurse.push_back(this->entries[i].close);
+    }
+    plotter.addPlot(time, schlusskurse, "Schlusskurse", '*');
+    plotter.show();
+
+
 }
 
 int HashTable::hashFunction(const std::string& s) {
@@ -324,8 +343,22 @@ void HashTable::import(){
     vector<vector<string>> content = takeLastMonthData(readCSV(kuerzel+".csv"));
     // 3: Insert data in the corresponding index
     insertData(content, index);
-
 }
+
+void HashTable::plot(){
+    string kuerzel;
+    cout<<"Enter Kuerzel: ";
+    cin>>kuerzel;
+
+    int index = findByKuerzel(kuerzel);
+
+    if(index == -1){
+        cout << "Not found."<<endl;
+    }else{
+        aktien[index].plot();
+    }
+}
+
 //TESTING
 void HashTable::readCSVdebug(string fname){
 
