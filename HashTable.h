@@ -17,7 +17,7 @@ class HashTable{
     private:
         Aktie aktien[ARRAY_SIZE];
         // Methods
-        int hashFunction(const string& s);
+        int hashFunction(string s);
         // returns where to insert
         int getInsertionIndex(string s);
         // tries to find, if not, returns -1

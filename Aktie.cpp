@@ -3,7 +3,7 @@
 // https://github.com/joehood/asciiplotter/blob/master/src/asciiplotter.cpp
 #include "asciiplotter.h"
 
-#include "Aktie.hpp"
+#include "Aktie.h"
 
 
 Aktie::Aktie() {

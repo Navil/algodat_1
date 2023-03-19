@@ -6,7 +6,7 @@
 #include "HashTable.h"
 
 
-int HashTable::hashFunction(const std::string& s) {
+int HashTable::hashFunction(string s) {
     int hash_val = 0;
     int n = s.length();
     for (int i = 0; i < n; i++) {
