@@ -6,12 +6,12 @@
 #include "HashTable.h"
 
 
-int HashTable::hashFunction(string s) {
+int HashTable::hashFunction(string kuerzel) {
     int hash_val = 0;
-    int n = s.length();
+    int n = kuerzel.length();
     for (int i = 0; i < n; i++) {
         // static_cast<int> to get the ASCII number of the char s[i]
-        hash_val += static_cast<int>(s[i]) * pow(31, n-1-i);
+        hash_val += static_cast<int>(kuerzel[i]) * pow(31, n-1-i);
         }
     // Take the modulus to restrict the values from 0 to 1092
     return hash_val%ARRAY_SIZE;
